@@ -71,6 +71,7 @@ TestAllocator.c++x: TestAllocator
 	valgrind ./TestAllocator
 	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File '.*Allocator.h'"
 	$(GCOV) -b TestAllocator.c++ | grep -A 5 "File '.*TestAllocator.c++'"
+
 all: RunAllocator TestAllocator
 
 check: $(FILES)
