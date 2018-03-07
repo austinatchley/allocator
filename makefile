@@ -91,7 +91,7 @@ config:
 	git config -l
 
 docker:
-	docker run -it -v $(PWD):/usr/voting -w /usr/voting gpdowning/gcc
+	docker run -it -v $(PWD):/usr/allocator -w /usr/allocator gpdowning/gcc
 
 format:
 	$(CLANG_FORMAT) -i Allocator.h
@@ -104,7 +104,7 @@ scrub:
 	make clean
 	rm -f  Allocator.log
 	rm -f  Doxyfile
-	rm -rf voting-tests
+	rm -rf allocator-tests
 	rm -rf html
 	rm -rf latex
 
@@ -115,7 +115,7 @@ status:
 	git remote -v
 	git status
 
-travis: voting-tests html Allocator.log
+travis: allocator-tests html Allocator.log
 	make clean
 	ls -al
 	make
