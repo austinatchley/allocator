@@ -30,8 +30,8 @@
 *.exe
 *.out
 *.app
-RunVoting
-TestVoting
+RunAllocator
+TestAllocator
 
 .DS_Store
 *.gcda

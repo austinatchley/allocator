@@ -1,0 +1,55 @@
+sudo: false
+
+language: cpp
+
+compiler:
+    - gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - doxygen
+      - g++-7
+      - libboost-all-dev
+      - libgtest-dev
+      - valgrind
+
+before_install:
+    - cat .travis.yml
+
+install:
+    - pwd
+    - ls -al
+    - mkdir gtest
+    - cd gtest
+    - export LIBRARY_PATH=$(pwd)
+    - cp -r /usr/src/gtest/* ./
+    - cmake -D CMAKE_INSTALL_PREFIX:PATH=./ ./
+    - make
+    - pwd
+    - ls -al
+    - cd -
+
+before_script:
+    - date
+    - uname -a
+    - printenv | sort
+    - clang-check  --version
+    - clang-format --version
+    - doxygen      --version
+    - g++-7        --version
+    - gcov-7       --version
+    - git          --version
+    - make         --version
+    - valgrind     --version
+    - sudo updatedb
+    - locate       libgtest.a
+    - locate       libgtest_main.a
+    - locate       libpthread.a
+    - ls -al
+    - cat makefile
+
+script:
+    - make travis
