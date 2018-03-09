@@ -84,7 +84,8 @@ class my_allocator {
          * throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
          */
         my_allocator () {
-            (*this)[0] = 0; // replace!
+            (*this)[0] = N - 8; // N bytes minus 2 sentinels * 4 bytes each
+            (*this)[N/sizeof(int) - 1] = N - 8;
             // <your code>
             assert(valid());}
 
