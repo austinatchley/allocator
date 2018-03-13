@@ -105,10 +105,35 @@ class my_allocator {
          * choose the first block that fits
          * throw a bad_alloc exception, if n is invalid
          */
-        pointer allocate (size_type) {
-            // <your code>
+        pointer allocate (size_type size) {
+            if (size < sizeof(T) + (2 * sizeof(int)))
+              throw bad_alloc();
+
+            pointer p = &(*this)[0];
+
+            while (p != &(*this)[N/sizeof(int) - 1]) {
+                if (*p > size)
+                  break;
+                p += *p; 
+            }
+
+            if (*p < sizeof(T) + (2 * sizeof(int)))
+              return nullptr;
+
+            pointer free_size = *p;
+            pointer end_point = p + size;
+            *p = -size;
+            *end_point = -size;
+
+            pointer new_block = p;
+
+            p += free_size - size + 1;
+            end_point += free_size - size + 1;
+            *p = -(*p - size);
+            *end_point = -(*end_point - size);
+
             assert(valid());
-            return nullptr;}           // replace!
+            return new_block;}
 
         // ---------
         // construct
