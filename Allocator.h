@@ -84,6 +84,11 @@ class my_allocator {
          * throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
          */
         my_allocator () {
+            if(N < sizeof(T) + (2 * sizeof(int))) {
+              std::bad_alloc exception;
+              throw exception;
+            }
+
             (*this)[0] = N - 8; // N bytes minus 2 sentinels * 4 bytes each
             (*this)[N/sizeof(int) - 1] = N - 8;
             // <your code>
@@ -106,10 +111,12 @@ class my_allocator {
          * throw a bad_alloc exception, if n is invalid
          */
         pointer allocate (size_type size) {
-            if (size < sizeof(T) + (2 * sizeof(int)))
-              throw bad_alloc();
+            if (size < sizeof(T) + (2 * sizeof(int))) {
+              std::bad_alloc exception;
+              throw exception;
+            }
 
-            pointer p = &(*this)[0];
+            int *p = &(*this)[0];
 
             while (p != &(*this)[N/sizeof(int) - 1]) {
                 if (*p > size)
@@ -118,14 +125,14 @@ class my_allocator {
             }
 
             if (*p < sizeof(T) + (2 * sizeof(int)))
-              return nullptr;
+              return 0;
 
-            pointer free_size = *p;
-            pointer end_point = p + size;
+            int free_size = *p;
+            int *end_point = p + size;
             *p = -size;
             *end_point = -size;
 
-            pointer new_block = p;
+            int *new_block = p;
 
             p += free_size - size + 1;
             end_point += free_size - size + 1;
@@ -133,7 +140,7 @@ class my_allocator {
             *end_point = -(*end_point - size);
 
             assert(valid());
-            return new_block;}
+            return reinterpret_cast<pointer>(new_block);}
 
         // ---------
         // construct
