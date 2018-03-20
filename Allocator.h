@@ -60,6 +60,8 @@ class my_allocator {
 
         char a[N];
 
+        int min_size = sizeof(T) + (2 * sizeof(int));
+
         // -----
         // valid
         // -----
@@ -84,7 +86,7 @@ class my_allocator {
          * throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
          */
         my_allocator () {
-            if(N < sizeof(T) + (2 * sizeof(int))) {
+            if(N < min_size) {
               std::bad_alloc exception;
               throw exception;
             }
@@ -111,7 +113,7 @@ class my_allocator {
          * throw a bad_alloc exception, if n is invalid
          */
         pointer allocate (size_type size) {
-            if (size < sizeof(T) + (2 * sizeof(int))) {
+            if (size < min_size) {
               std::bad_alloc exception;
               throw exception;
             }
@@ -124,20 +126,27 @@ class my_allocator {
                 p += *p; 
             }
 
-            if (*p < sizeof(T) + (2 * sizeof(int)))
+            if (*p < size)
               return 0;
 
+            int *new_block = p + 1;
+
             int free_size = *p;
-            int *end_point = p + size;
+            if (free_size - size < min_size) {
+              *p *= -1;
+              *(p + size + 1) *= -1;
+              return reinterpret_cast<pointer>(new_block);
+            }
+
+            int *start_point = p;
+            int *end_point = start_point + size + 1;
             *p = -size;
             *end_point = -size;
 
-            int *new_block = p;
-
-            p += free_size - size + 1;
-            end_point += free_size - size + 1;
-            *p = -(*p - size);
-            *end_point = -(*end_point - size);
+            p = end_point + 1;
+            end_point = start_point + free_size + 1;
+            *p = *p - size;
+            *end_point = *p - size;
 
             assert(valid());
             return reinterpret_cast<pointer>(new_block);}
