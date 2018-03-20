@@ -112,11 +112,12 @@ class my_allocator {
          * choose the first block that fits
          * throw a bad_alloc exception, if n is invalid
          */
-        pointer allocate (size_type size) {
-            if (size < min_size) {
+        pointer allocate (size_type num_obj) {
+            if (num_obj <= 0) {  
               std::bad_alloc exception;
               throw exception;
             }
+            size_type size = num_obj * sizeof(T);
 
             int *p = &(*this)[0];
 

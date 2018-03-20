@@ -15,18 +15,41 @@
 
 #include "Allocator.h"
 
+using namespace std;
+
+template<typename T, int N>
+void allocator_print(const my_allocator<T, N>& x) {
+    int index = 0;
+    while (index < (N / sizeof(int))) {
+        cout << x[index] << " ";
+        //index += (x[index] / sizeof(int)) + 1;
+        ++index;
+    }
+    cout << endl;
+}
+
 // ----
 // main
 // ----
 
 int main () {
-    using namespace std;
-    // read  RunAllocator.in
-    // write RunAllocator.out
+    ifstream f("RunAllocator.in");
+    string s;
+    
+    getline(f, s);
+    int cases = stoi(s);
 
-    // replace!
-    ifstream f("RunAllocator.out");
-    string   s;
-    while (getline(f, s))
-        cout << s << endl;
+    // Blank line
+    getline(f, s);
+
+    while (cases--) {
+        my_allocator<double, 1000> x;
+        while(getline(f, s) && s.length() != 0) {
+            int val = stoi(s);
+            if (val > 0)
+              x.allocate(val);
+        }
+        allocator_print<double, 1000>(x);
+        cout << endl;
+    }
     return 0;}
