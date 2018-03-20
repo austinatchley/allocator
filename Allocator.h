@@ -131,12 +131,12 @@ class my_allocator {
                 if (*p > 0 && *p > size) {
                   break;
                 }
-                p += abs(*p)/sizeof(int) + 1; 
+                p += abs(*p)/sizeof(int) + 2; 
             }
 
             // if we exit the loop, and the block is too small (or negative)
             // return NULL
-            if (*p > 0 && *p < size)
+            if (*p < 0 ||(*p > 0 && *p < size))
               return 0;
 
             int *new_block = p + 1;
