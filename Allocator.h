@@ -128,15 +128,15 @@ class my_allocator {
             int *p = &(*this)[0];
 
             while (p != &(*this)[N - sizeof(int)]) {
-                if (*p > size) {
+                if (*p > 0 && *p > size) {
                   break;
                 }
-                p += *p; 
+                p += abs(*p)/sizeof(int) + 1; 
             }
 
             // if we exit the loop, and the block is too small (or negative)
             // return NULL
-            if (*p < size)
+            if (*p > 0 && *p < size)
               return 0;
 
             int *new_block = p + 1;
@@ -144,17 +144,17 @@ class my_allocator {
             int free_size = *p;
             if (free_size - size < min_size) {
               *p *= -1;
-              *(p + free_size + 1) *= -1;
+              *(p + free_size/sizeof(int) + 1) *= -1;
               return reinterpret_cast<pointer>(new_block);
             }
 
             int *start_point = p;
-            int *end_point = start_point + size + 1;
+            int *end_point = start_point + size/sizeof(int) + 1;
             *p = -size;
             *end_point = -size;
 
             p = end_point + 1;
-            end_point = start_point + free_size + 1;
+            end_point = start_point + free_size/sizeof(int) + 1;
 
             int new_free_size = free_size - size - (2 * sizeof(int));
             *p = new_free_size;
