@@ -16,6 +16,8 @@
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
 
+#include <iostream>
+
 // ---------
 // Allocator
 // ---------
@@ -92,7 +94,8 @@ class my_allocator {
             }
 
             (*this)[0] = N - 8; // N bytes minus 2 sentinels * 4 bytes each
-            (*this)[N/sizeof(int) - 1] = N - 8;
+            (*this)[N - sizeof(int)] = N - 8;
+
             // <your code>
             assert(valid());}
 
@@ -117,16 +120,22 @@ class my_allocator {
               std::bad_alloc exception;
               throw exception;
             }
+
+            // number of bytes to allocate
             size_type size = num_obj * sizeof(T);
 
+            // initialize p to the first sentinel
             int *p = &(*this)[0];
 
-            while (p != &(*this)[N/sizeof(int) - 1]) {
-                if (*p > size)
+            while (p != &(*this)[N - sizeof(int)]) {
+                if (*p > size) {
                   break;
+                }
                 p += *p; 
             }
 
+            // if we exit the loop, and the block is too small (or negative)
+            // return NULL
             if (*p < size)
               return 0;
 
@@ -135,7 +144,7 @@ class my_allocator {
             int free_size = *p;
             if (free_size - size < min_size) {
               *p *= -1;
-              *(p + size + 1) *= -1;
+              *(p + free_size + 1) *= -1;
               return reinterpret_cast<pointer>(new_block);
             }
 
@@ -146,8 +155,10 @@ class my_allocator {
 
             p = end_point + 1;
             end_point = start_point + free_size + 1;
-            *p = *p - size;
-            *end_point = *p - size;
+
+            int new_free_size = free_size - size - (2 * sizeof(int));
+            *p = new_free_size;
+            *end_point = new_free_size;
 
             assert(valid());
             return reinterpret_cast<pointer>(new_block);}

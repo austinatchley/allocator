@@ -20,10 +20,10 @@ using namespace std;
 template<typename T, int N>
 void allocator_print(const my_allocator<T, N>& x) {
     int index = 0;
-    while (index < (N / sizeof(int))) {
+    while (index < N) {
         cout << x[index] << " ";
-        //index += (x[index] / sizeof(int)) + 1;
-        ++index;
+        //index += x[index] + sizeof(int);
+        index += sizeof(int);
     }
     cout << endl;
 }
@@ -44,6 +44,7 @@ int main () {
 
     while (cases--) {
         my_allocator<double, 1000> x;
+        allocator_print<double, 1000>(x);
         while(getline(f, s) && s.length() != 0) {
             int val = stoi(s);
             if (val > 0)
