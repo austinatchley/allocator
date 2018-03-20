@@ -165,9 +165,25 @@ class my_allocator {
          * throw an invalid_argument exception, if p is invalid
          * <your documentation>
          */
-        void deallocate (pointer, size_type) {
-            // <your code>
-            assert(valid());}
+        void deallocate (pointer p, size_type) {
+            assert(valid());
+	    int *front = reinterpret_cast<int*>(p) - 1;
+	    int *end = front + *front + 1;
+	    int size = *front;
+	
+	    if(front!= reinterpret_cast<int*>(a) && *(front - 1) > 0) {
+		front -= *(front - 1) + 2;
+		size += *front + 2*sizeof(int);
+	    }
+	    if(end != reinterpret_cast<int*>(a + N) && *(end + 1) > 0) {
+		end+= *(end + 1) + 2;
+		size += *end + 2*sizeof(int);
+
+	    }
+	    *front = size;
+	    *end = size;
+	    
+	}
 
         // -------
         // destroy
