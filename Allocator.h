@@ -11,12 +11,12 @@
 // includes
 // --------
 
-#include <cassert>   // assert
+#include <cassert> // assert
+#include <cmath>
 #include <cstddef>   // ptrdiff_t, size_t
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
 #include <unordered_set>
-#include <cmath>
 
 #include <iostream>
 
@@ -24,232 +24,235 @@
 // Allocator
 // ---------
 
-template <typename T, std::size_t N>
-class my_allocator {
-    public:
-        // --------
-        // typedefs
-        // --------
+template <typename T, std::size_t N> class my_allocator {
+public:
+  // --------
+  // typedefs
+  // --------
 
-        using      value_type = T;
+  using value_type = T;
 
-        using       size_type = std::size_t;
-        using difference_type = std::ptrdiff_t;
+  using size_type = std::size_t;
+  using difference_type = std::ptrdiff_t;
 
-        using       pointer =       value_type*;
-        using const_pointer = const value_type*;
+  using pointer = value_type *;
+  using const_pointer = const value_type *;
 
-        using       reference =       value_type&;
-        using const_reference = const value_type&;
+  using reference = value_type &;
+  using const_reference = const value_type &;
 
-    public:
-        // -----------
-        // operator ==
-        // -----------
+public:
+  // -----------
+  // operator ==
+  // -----------
 
-        friend bool operator == (const my_allocator&, const my_allocator&) {
-            return false;}                                                   // this is correct
+  friend bool operator==(const my_allocator &, const my_allocator &) {
+    return false;
+  } // this is correct
 
-        // -----------
-        // operator !=
-        // -----------
+  // -----------
+  // operator !=
+  // -----------
 
-        friend bool operator != (const my_allocator& lhs, const my_allocator& rhs) {
-            return !(lhs == rhs);}
+  friend bool operator!=(const my_allocator &lhs, const my_allocator &rhs) {
+    return !(lhs == rhs);
+  }
 
-    private:
-        // ----
-        // data
-        // ----
+private:
+  // ----
+  // data
+  // ----
 
-        char a[N];
+  char a[N];
 
-        const int min_size = sizeof(T) + (2 * sizeof(int));
+  const int min_size = sizeof(T) + (2 * sizeof(int));
 
-        std::unordered_set<const int*> val_pointers;
+  std::unordered_set<const int *> val_pointers;
 
-        // -----
-        // valid
-        // -----
+  // -----
+  // valid
+  // -----
 
-        /**
-         * O(1) in space
-         * O(n) in time
-         * <your documentation>
-         */
-        bool valid () const {
-            const int *p = &(*this)[0];
-            while(p < &(*this)[N - sizeof(int)]) {
-              if(*p != *(p + abs(*p)/sizeof(int) + 1))
-                return false;
-              if(*p < 0 &&
-              val_pointers.find((p+1)) == val_pointers.end())
-                return false;
-              p+= abs(*p)/sizeof(int) + 2;
+  /**
+   * O(1) in space
+   * O(n) in time
+   * <your documentation>
+   */
+  bool valid() const {
+    const int *p = &(*this)[0];
+    while (p < &(*this)[N - sizeof(int)]) {
+      if (*p != *(p + abs(*p) / sizeof(int) + 1))
+        return false;
+      if (*p < 0 && val_pointers.find((p + 1)) == val_pointers.end())
+        return false;
+      p += abs(*p) / sizeof(int) + 2;
+    }
+    return true;
+  }
 
-            }
-            return true;}
+public:
+  // ------------
+  // constructors
+  // ------------
 
-    public:
-        // ------------
-        // constructors
-        // ------------
+  /**
+   * O(1) in space
+   * O(1) in time
+   * throw a bad_alloc exception, if N is less than sizeof(T) + (2 *
+   * sizeof(int))
+   */
+  my_allocator() {
+    if (N < min_size) {
+      std::bad_alloc exception;
+      throw exception;
+    }
 
-        /**
-         * O(1) in space
-         * O(1) in time
-         * throw a bad_alloc exception, if N is less than sizeof(T) + (2 * sizeof(int))
-         */
-        my_allocator () {
-            if(N < min_size) {
-              std::bad_alloc exception;
-              throw exception;
-            }
+    (*this)[0] = N - 8; // N bytes minus 2 sentinels * 4 bytes each
+    (*this)[N - sizeof(int)] = N - 8;
 
-            (*this)[0] = N - 8; // N bytes minus 2 sentinels * 4 bytes each
-            (*this)[N - sizeof(int)] = N - 8;
+    // <your code>
+    assert(valid());
+  }
 
-            // <your code>
-            assert(valid());}
+  my_allocator(const my_allocator &) = default;
+  ~my_allocator() = default;
+  my_allocator &operator=(const my_allocator &) = default;
 
-                      my_allocator  (const my_allocator&) = default;
-                      ~my_allocator ()                    = default;
-        my_allocator& operator =    (const my_allocator&) = default;
+  // --------
+  // allocate
+  // --------
 
-        // --------
-        // allocate
-        // --------
+  /**
+   * O(1) in space
+   * O(n) in time
+   * after allocation there must be enough space left for a valid block
+   * the smallest allowable block is sizeof(T) + (2 * sizeof(int))
+   * choose the first block that fits
+   * throw a bad_alloc exception, if n is invalid
+   */
+  pointer allocate(size_type num_obj) {
+    if (num_obj <= 0) {
+      std::bad_alloc exception;
+      throw exception;
+    }
 
-        /**
-         * O(1) in space
-         * O(n) in time
-         * after allocation there must be enough space left for a valid block
-         * the smallest allowable block is sizeof(T) + (2 * sizeof(int))
-         * choose the first block that fits
-         * throw a bad_alloc exception, if n is invalid
-         */
-        pointer allocate (size_type num_obj) {
-            if (num_obj <= 0) {  
-              std::bad_alloc exception;
-              throw exception;
-            }
+    // number of bytes to allocate
+    size_type size = num_obj * sizeof(T);
 
-            // number of bytes to allocate
-            size_type size = num_obj * sizeof(T);
+    // initialize p to the first sentinel
+    int *p = &(*this)[0];
 
-            // initialize p to the first sentinel
-            int *p = &(*this)[0];
+    while (p != &(*this)[N - sizeof(int)]) {
+      if (*p > 0 && *p > size) {
+        break;
+      }
+      p += std::abs(*p) / sizeof(int) + 2;
+    }
 
-            while (p != &(*this)[N - sizeof(int)]) {
-                if (*p > 0 && *p > size) {
-                  break;
-                }
-                p += std::abs(*p)/sizeof(int) + 2; 
-            }
+    // if we exit the loop, and the block is too small (or negative)
+    // return NULL
+    if (*p < 0 || (*p > 0 && *p < size))
+      return 0;
 
-            // if we exit the loop, and the block is too small (or negative)
-            // return NULL
-            if (*p < 0 ||(*p > 0 && *p < size))
-              return 0;
+    int *new_block = p + 1;
 
-            int *new_block = p + 1;
+    int free_size = *p;
+    if (free_size - size < min_size) {
+      *p *= -1;
+      *(p + free_size / sizeof(int) + 1) *= -1;
+      val_pointers.insert(new_block);
+    }
 
-            int free_size = *p;
-            if (free_size - size < min_size) {
-              *p *= -1;
-              *(p + free_size/sizeof(int) + 1) *= -1;
-	      val_pointers.insert(new_block);
-            }
+    int *start_point = p;
+    int *end_point = start_point + size / sizeof(int) + 1;
+    *p = -size;
+    *end_point = -size;
 
-            int *start_point = p;
-            int *end_point = start_point + size/sizeof(int) + 1;
-            *p = -size;
-            *end_point = -size;
+    p = end_point + 1;
+    end_point = start_point + free_size / sizeof(int) + 1;
 
-            p = end_point + 1;
-            end_point = start_point + free_size/sizeof(int) + 1;
+    int new_free_size = free_size - size - (2 * sizeof(int));
+    *p = new_free_size;
+    *end_point = new_free_size;
 
-            int new_free_size = free_size - size - (2 * sizeof(int));
-            *p = new_free_size;
-            *end_point = new_free_size;
+    val_pointers.insert(new_block);
+    return reinterpret_cast<pointer>(new_block);
+  }
 
-	    val_pointers.insert(new_block);
-            return reinterpret_cast<pointer>(new_block);}
+  // ---------
+  // construct
+  // ---------
 
-        // ---------
-        // construct
-        // ---------
+  /**
+   * O(1) in space
+   * O(1) in time
+   */
+  void construct(pointer p, const_reference v) {
+    new (p) T(v); // this is correct and exempt
+    assert(valid());
+  } // from the prohibition of new
 
-        /**
-         * O(1) in space
-         * O(1) in time
-         */
-        void construct (pointer p, const_reference v) {
-            new (p) T(v);                               // this is correct and exempt
-            assert(valid());}                           // from the prohibition of new
+  // ----------
+  // deallocate
+  // ----------
 
-        // ----------
-        // deallocate
-        // ----------
+  /**
+   * O(1) in space
+   * O(1) in time
+   * after deallocation adjacent free blocks must be coalesced
+   * throw an invalid_argument exception, if p is invalid
+   * <your documentation>
+   */
+  void deallocate(pointer p, size_type) {
+    int *point = reinterpret_cast<int *>(p);
+    if (val_pointers.find(point) == val_pointers.end()) {
+      std::bad_alloc exception;
+      throw exception;
+    } else
+      val_pointers.erase(point);
 
-        /**
-         * O(1) in space
-         * O(1) in time
-         * after deallocation adjacent free blocks must be coalesced
-         * throw an invalid_argument exception, if p is invalid
-         * <your documentation>
-         */
-        void deallocate (pointer p, size_type) {
-            int *point = reinterpret_cast<int*>(p);
-	    if(val_pointers.find(point) == val_pointers.end()){
-              std::bad_alloc exception;
-              throw exception;
-            }
-            else
-	      val_pointers.erase(point);
-            
-	    int *front = point - 1;
-	    int *end = front + *front + 1;
-	    int size = *front;
-	
-	    if(front!= &(*this)[0] && *(front - 1) > 0) {
-		front -= *(front - 1)/sizeof(int) + 2;
-		size += *front + 2*sizeof(int);
-	    }
-	    if(end != &(*this)[N - sizeof(int)] && *(end + 1) > 0) {
-		end+= *(end + 1)/sizeof(int) + 2;
-		size += *end + 2*sizeof(int);
+    int *front = point - 1;
+    int *end = front + *front + 1;
+    int size = *front;
 
-	    }
-	    *front = size;
-	    *end = size;
-	    
-	}
+    if (front != &(*this)[0] && *(front - 1) > 0) {
+      front -= *(front - 1) / sizeof(int) + 2;
+      size += *front + 2 * sizeof(int);
+    }
+    if (end != &(*this)[N - sizeof(int)] && *(end + 1) > 0) {
+      end += *(end + 1) / sizeof(int) + 2;
+      size += *end + 2 * sizeof(int);
+    }
+    *front = size;
+    *end = size;
+  }
 
-        // -------
-        // destroy
-        // -------
+  // -------
+  // destroy
+  // -------
 
-        /**
-         * O(1) in space
-         * O(1) in time
-         */
-        void destroy (pointer p) {
-            p->~T();               // this is correct
-            assert(valid());}
+  /**
+   * O(1) in space
+   * O(1) in time
+   */
+  void destroy(pointer p) {
+    p->~T(); // this is correct
+    assert(valid());
+  }
 
-        /**
-         * O(1) in space
-         * O(1) in time
-         */
-        int& operator [] (int i) {
-            return *reinterpret_cast<int*>(&a[i]);}
+  /**
+   * O(1) in space
+   * O(1) in time
+   */
+  int &operator[](int i) { return *reinterpret_cast<int *>(&a[i]); }
 
-        /**
-         * O(1) in space
-         * O(1) in time
-         */
-        const int& operator [] (int i) const {
-            return *reinterpret_cast<const int*>(&a[i]);}};
+  /**
+   * O(1) in space
+   * O(1) in time
+   */
+  const int &operator[](int i) const {
+    return *reinterpret_cast<const int *>(&a[i]);
+  }
+};
 
 #endif // Allocator_h
