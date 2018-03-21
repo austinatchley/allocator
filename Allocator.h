@@ -65,9 +65,8 @@ private:
 
   char a[N];
 
-  const size_type min_size = sizeof(T) + (2 * sizeof(int));
-
   std::unordered_set<const int *> val_pointers;
+  const size_type min_size = sizeof(T) + (2 * sizeof(int));
 
   // -----
   // valid
@@ -80,11 +79,17 @@ private:
    */
   bool valid() const {
     const int *p = &(*this)[0];
+
+    // while p is not the last sentinel, check if the sentinels are valid
     while (p < &(*this)[N - sizeof(int)]) {
+      // if the begin sentinel doesn't match the end sentinel, return false
       if (*p != *(p + std::abs(*p) / sizeof(int) + 1))
         return false;
+
+      // try to find the pointer in the val_pointers set
       if (*p < 0 && val_pointers.find((p + 1)) == val_pointers.end())
         return false;
+
       p += std::abs(*p) / sizeof(int) + 2;
     }
     return true;
@@ -101,8 +106,7 @@ public:
    * throw a bad_alloc exception, if N is less than sizeof(T) + (2 *
    * sizeof(int))
    */
-  my_allocator() : val_pointers(0)
-  {
+  my_allocator() : val_pointers(0) {
     if (N < min_size) {
       std::bad_alloc exception;
       throw exception;
@@ -142,10 +146,13 @@ public:
     // initialize p to the first sentinel
     int *p = &(*this)[0];
 
+    // advance p until we find the right block or we hit the end
     while (p != &(*this)[N - sizeof(int)]) {
       if (*p > 0 && static_cast<unsigned int>(*p) >= size) {
         break;
       }
+
+      // add 2 to account for the sentinels
       p += std::abs(*p) / sizeof(int) + 2;
     }
 
@@ -154,9 +161,13 @@ public:
     if (*p < 0 || (*p > 0 && static_cast<unsigned int>(*p) < size))
       return 0;
 
+    // pointer to beginning of user's block
     int *new_block = p + 1;
 
     int free_size = *p;
+
+    // if there isn't enough space left over for another,
+    // take the whole block
     if (static_cast<unsigned int>(free_size - size) < min_size) {
       *p *= -1;
       *(p + free_size / sizeof(int) + 1) *= -1;
@@ -168,8 +179,9 @@ public:
     int *end_point = start_point + size / sizeof(int) + 1;
     *p = -size;
     *end_point = -size;
-    
-    if(end_point != &(*this)[N - sizeof(int)]) {
+
+    // only update the following sentinels if we aren't at the end
+    if (end_point != &(*this)[N - sizeof(int)]) {
       p = end_point + 1;
       end_point = start_point + free_size / sizeof(int) + 1;
 
@@ -208,23 +220,28 @@ public:
    */
   void deallocate(pointer p, size_type) {
     int *point = reinterpret_cast<int *>(p);
+
     if (val_pointers.find(point) == val_pointers.end()) {
       throw std::invalid_argument("invalid arg in deallocate");
     } else
       val_pointers.erase(point);
 
     int *front = point - 1;
-    int *end = front + -1*(*front)/sizeof(int) + 1;
-    int size = -1*(*front);
+    int *end = front + -1 * (*front) / sizeof(int) + 1;
+    int size = -1 * (*front);
 
+    // update our sentinels according to whether or not we
+    // should coalesce with other free blocks
     if (front != &(*this)[0] && *(front - 1) > 0) {
       front -= *(front - 1) / sizeof(int) + 2;
       size += *front + 2 * sizeof(int);
     }
+
     if (end != &(*this)[N - sizeof(int)] && *(end + 1) > 0) {
       end += *(end + 1) / sizeof(int) + 2;
       size += *end + 2 * sizeof(int);
     }
+
     *front = size;
     *end = size;
   }

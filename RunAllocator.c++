@@ -8,18 +8,19 @@
 // includes
 // --------
 
+#include <algorithm>
 #include <cassert> // assert
 #include <deque>
 #include <fstream>  // ifstream
 #include <iostream> // cout, endl, getline
 #include <string>   // s
-#include <algorithm>
 
 #include "Allocator.h"
 
 using namespace std;
 
-template <typename T, size_t N> void allocator_print(const my_allocator<T, N> &x) {
+template <typename T, size_t N>
+void allocator_print(const my_allocator<T, N> &x) {
   int index = 0;
   while (static_cast<unsigned int>(index) < N - sizeof(int)) {
     cout << x[index] << " ";
@@ -62,7 +63,7 @@ int main() {
         double *pointer = x.allocate(val);
         auto spot = std::upper_bound(pointers.begin(), pointers.end(), pointer);
 
-        pointers.insert(spot, pointer); 
+        pointers.insert(spot, pointer);
       } else if (val < 0) {
         int index = -val - 1;
         x.deallocate(pointers[index], 0);
