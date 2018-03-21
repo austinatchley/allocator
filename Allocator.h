@@ -15,6 +15,7 @@
 #include <cstddef>   // ptrdiff_t, size_t
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
+#include <unordered_set>
 
 #include <iostream>
 
@@ -63,6 +64,8 @@ class my_allocator {
         char a[N];
 
         int min_size = sizeof(T) + (2 * sizeof(int));
+
+	unordered_set<pointer> val_pointers;
 
         // -----
         // valid
@@ -145,6 +148,7 @@ class my_allocator {
             if (free_size - size < min_size) {
               *p *= -1;
               *(p + free_size/sizeof(int) + 1) *= -1;
+	      val_pointers.insert(reinterpret_cast<pointer>(new_block));
               return reinterpret_cast<pointer>(new_block);
             }
 
@@ -160,7 +164,7 @@ class my_allocator {
             *p = new_free_size;
             *end_point = new_free_size;
 
-            assert(valid());
+	    val_pointers.insert(reinterpret_cast<pointer>(new_block));
             return reinterpret_cast<pointer>(new_block);}
 
         // ---------
@@ -187,17 +191,23 @@ class my_allocator {
          * <your documentation>
          */
         void deallocate (pointer p, size_type) {
-            assert(valid());
+	    if(val_pointers.find(p) == val_pointers.end()){
+              std::bad_alloc exception;
+              throw exception;
+            }
+            else
+	      val_pointers.erase(p);
+            
 	    int *front = reinterpret_cast<int*>(p) - 1;
 	    int *end = front + *front + 1;
 	    int size = *front;
 	
-	    if(front!= reinterpret_cast<int*>(a) && *(front - 1) > 0) {
-		front -= *(front - 1) + 2;
+	    if(front!= &(*this)[0] && *(front - 1) > 0) {
+		front -= *(front - 1)/sizeof(int) + 2;
 		size += *front + 2*sizeof(int);
 	    }
-	    if(end != reinterpret_cast<int*>(a + N) && *(end + 1) > 0) {
-		end+= *(end + 1) + 2;
+	    if(end != &(*this)[N - sizeof(int)] && *(end + 1) > 0) {
+		end+= *(end + 1)/sizeof(int) + 2;
 		size += *end + 2*sizeof(int);
 
 	    }

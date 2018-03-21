@@ -22,7 +22,17 @@ void allocator_print(const my_allocator<T, N>& x) {
     int index = 0;
     while (index < N) {
         cout << x[index] << " ";
-        //index += x[index] + sizeof(int);
+        index += x[index] + 2*sizeof(int);
+    }
+    cout << endl;
+}
+
+
+template<typename T, int N>
+void allocator_print_bytes(const my_allocator<T, N>& x) {
+    int index = 0;
+    while (index < N) {
+        cout << x[index] << " ";
         index += sizeof(int);
     }
     cout << endl;
