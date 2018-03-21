@@ -212,8 +212,8 @@ public:
       val_pointers.erase(point);
 
     int *front = point - 1;
-    int *end = front + *front + 1;
-    int size = *front;
+    int *end = front + -1*(*front)/sizeof(int) + 1;
+    int size = -1*(*front);
 
     if (front != &(*this)[0] && *(front - 1) > 0) {
       front -= *(front - 1) / sizeof(int) + 2;
