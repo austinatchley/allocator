@@ -65,7 +65,7 @@ private:
 
   char a[N];
 
-  const int min_size = sizeof(T) + (2 * sizeof(int));
+  const size_type min_size = sizeof(T) + (2 * sizeof(int));
 
   std::unordered_set<const int *> val_pointers;
 
@@ -81,11 +81,11 @@ private:
   bool valid() const {
     const int *p = &(*this)[0];
     while (p < &(*this)[N - sizeof(int)]) {
-      if (*p != *(p + abs(*p) / sizeof(int) + 1))
+      if (*p != *(p + std::abs(*p) / sizeof(int) + 1))
         return false;
       if (*p < 0 && val_pointers.find((p + 1)) == val_pointers.end())
         return false;
-      p += abs(*p) / sizeof(int) + 2;
+      p += std::abs(*p) / sizeof(int) + 2;
     }
     return true;
   }
@@ -101,7 +101,8 @@ public:
    * throw a bad_alloc exception, if N is less than sizeof(T) + (2 *
    * sizeof(int))
    */
-  my_allocator() {
+  my_allocator() : val_pointers(0)
+  {
     if (N < min_size) {
       std::bad_alloc exception;
       throw exception;
@@ -110,7 +111,6 @@ public:
     (*this)[0] = N - 8; // N bytes minus 2 sentinels * 4 bytes each
     (*this)[N - sizeof(int)] = N - 8;
 
-    // <your code>
     assert(valid());
   }
 
@@ -143,7 +143,7 @@ public:
     int *p = &(*this)[0];
 
     while (p != &(*this)[N - sizeof(int)]) {
-      if (*p > 0 && *p >= size) {
+      if (*p > 0 && static_cast<unsigned int>(*p) >= size) {
         break;
       }
       p += std::abs(*p) / sizeof(int) + 2;
@@ -151,13 +151,13 @@ public:
 
     // if we exit the loop, and the block is too small (or negative)
     // return NULL
-    if (*p < 0 || (*p > 0 && *p < size))
+    if (*p < 0 || (*p > 0 && static_cast<unsigned int>(*p) < size))
       return 0;
 
     int *new_block = p + 1;
 
     int free_size = *p;
-    if (free_size - size < min_size) {
+    if (static_cast<unsigned int>(free_size - size) < min_size) {
       *p *= -1;
       *(p + free_size / sizeof(int) + 1) *= -1;
       val_pointers.insert(new_block);
@@ -176,10 +176,10 @@ public:
       int new_free_size = free_size - size - (2 * sizeof(int));
       *p = new_free_size;
       *end_point = new_free_size;
-
-      val_pointers.insert(new_block);
-      return reinterpret_cast<pointer>(new_block);
     }
+
+    val_pointers.insert(new_block);
+    return reinterpret_cast<pointer>(new_block);
   }
 
   // ---------
@@ -209,8 +209,7 @@ public:
   void deallocate(pointer p, size_type) {
     int *point = reinterpret_cast<int *>(p);
     if (val_pointers.find(point) == val_pointers.end()) {
-      std::bad_alloc exception;
-      throw exception;
+      throw std::invalid_argument("invalid arg in deallocate");
     } else
       val_pointers.erase(point);
 

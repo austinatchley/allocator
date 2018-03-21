@@ -19,9 +19,9 @@
 
 using namespace std;
 
-template <typename T, int N> void allocator_print(const my_allocator<T, N> &x) {
+template <typename T, size_t N> void allocator_print(const my_allocator<T, N> &x) {
   int index = 0;
-  while (index < N - sizeof(int)) {
+  while (static_cast<unsigned int>(index) < N - sizeof(int)) {
     cout << x[index] << " ";
     index += std::abs(x[index]) + 2 * sizeof(int);
   }
