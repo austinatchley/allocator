@@ -43,20 +43,19 @@ void allocator_print_ints(const my_allocator<T, N> &x) {
 // ----
 
 int main() {
-  ifstream f("RunAllocator.in");
   string s;
 
-  getline(f, s);
+  getline(cin, s);
   int cases = stoi(s);
 
   // Blank line
-  getline(f, s);
+  getline(cin, s);
 
   while (cases--) {
     my_allocator<double, 1000> x;
     deque<double *> pointers;
 
-    while (getline(f, s) && s.length() != 0) {
+    while (getline(cin, s) && s.length() != 0) {
       int val = stoi(s);
 
       if (val > 0) {

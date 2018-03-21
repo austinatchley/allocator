@@ -41,6 +41,6 @@ TestAllocator
 *.tmp
 
 latex
-voting-tests/
+allocator-tests/
 
 *.swp
