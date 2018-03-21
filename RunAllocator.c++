@@ -72,8 +72,6 @@ int main () {
               assert(0);
         }
 
-        cout << "test" << endl << std::flush;
-
         allocator_print<double, 1000>(x);
     }
     return 0;}
