@@ -143,7 +143,7 @@ public:
     int *p = &(*this)[0];
 
     while (p != &(*this)[N - sizeof(int)]) {
-      if (*p > 0 && *p > size) {
+      if (*p > 0 && *p >= size) {
         break;
       }
       p += std::abs(*p) / sizeof(int) + 2;
@@ -161,22 +161,25 @@ public:
       *p *= -1;
       *(p + free_size / sizeof(int) + 1) *= -1;
       val_pointers.insert(new_block);
+      return reinterpret_cast<pointer>(new_block);
     }
 
     int *start_point = p;
     int *end_point = start_point + size / sizeof(int) + 1;
     *p = -size;
     *end_point = -size;
+    
+    if(end_point != &(*this)[N - sizeof(int)]) {
+      p = end_point + 1;
+      end_point = start_point + free_size / sizeof(int) + 1;
 
-    p = end_point + 1;
-    end_point = start_point + free_size / sizeof(int) + 1;
+      int new_free_size = free_size - size - (2 * sizeof(int));
+      *p = new_free_size;
+      *end_point = new_free_size;
 
-    int new_free_size = free_size - size - (2 * sizeof(int));
-    *p = new_free_size;
-    *end_point = new_free_size;
-
-    val_pointers.insert(new_block);
-    return reinterpret_cast<pointer>(new_block);
+      val_pointers.insert(new_block);
+      return reinterpret_cast<pointer>(new_block);
+    }
   }
 
   // ---------
