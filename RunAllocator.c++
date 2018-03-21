@@ -13,6 +13,7 @@
 #include <fstream>  // ifstream
 #include <iostream> // cout, endl, getline
 #include <string>   // s
+#include <algorithm>
 
 #include "Allocator.h"
 
@@ -60,7 +61,9 @@ int main() {
 
       if (val > 0) {
         double *pointer = x.allocate(val);
-        pointers.push_back(pointer);
+        auto spot = std::upper_bound(pointers.begin(), pointers.end(), pointer);
+
+        pointers.insert(spot, pointer); 
       } else if (val < 0) {
         int index = -val - 1;
         x.deallocate(pointers[index], 0);
