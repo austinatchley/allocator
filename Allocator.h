@@ -66,7 +66,7 @@ class my_allocator {
 
         const int min_size = sizeof(T) + (2 * sizeof(int));
 
-        std::unordered_set<pointer> val_pointers;
+        std::unordered_set<const int*> val_pointers;
 
         // -----
         // valid
@@ -78,7 +78,16 @@ class my_allocator {
          * <your documentation>
          */
         bool valid () const {
-            // <your code>
+            const int *p = &(*this)[0];
+            while(p < &(*this)[N - sizeof(int)]) {
+              if(*p != *(p + abs(*p)/sizeof(int) + 1))
+                return false;
+              if(*p < 0 &&
+              val_pointers.find((p+1)) == val_pointers.end())
+                return false;
+              p+= abs(*p)/sizeof(int) + 2;
+
+            }
             return true;}
 
     public:
@@ -149,8 +158,7 @@ class my_allocator {
             if (free_size - size < min_size) {
               *p *= -1;
               *(p + free_size/sizeof(int) + 1) *= -1;
-	      val_pointers.insert(reinterpret_cast<pointer>(new_block));
-              return reinterpret_cast<pointer>(new_block);
+	      val_pointers.insert(new_block);
             }
 
             int *start_point = p;
@@ -165,7 +173,7 @@ class my_allocator {
             *p = new_free_size;
             *end_point = new_free_size;
 
-	    val_pointers.insert(reinterpret_cast<pointer>(new_block));
+	    val_pointers.insert(new_block);
             return reinterpret_cast<pointer>(new_block);}
 
         // ---------
@@ -192,14 +200,15 @@ class my_allocator {
          * <your documentation>
          */
         void deallocate (pointer p, size_type) {
-	    if(val_pointers.find(p) == val_pointers.end()){
+            int *point = reinterpret_cast<int*>(p);
+	    if(val_pointers.find(point) == val_pointers.end()){
               std::bad_alloc exception;
               throw exception;
             }
             else
-	      val_pointers.erase(p);
+	      val_pointers.erase(point);
             
-	    int *front = reinterpret_cast<int*>(p) - 1;
+	    int *front = point - 1;
 	    int *end = front + *front + 1;
 	    int size = *front;
 	
