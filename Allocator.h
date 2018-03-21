@@ -16,6 +16,7 @@
 #include <new>       // bad_alloc, new
 #include <stdexcept> // invalid_argument
 #include <unordered_set>
+#include <cmath>
 
 #include <iostream>
 
@@ -63,9 +64,9 @@ class my_allocator {
 
         char a[N];
 
-        int min_size = sizeof(T) + (2 * sizeof(int));
+        const int min_size = sizeof(T) + (2 * sizeof(int));
 
-	unordered_set<pointer> val_pointers;
+        std::unordered_set<pointer> val_pointers;
 
         // -----
         // valid
@@ -134,7 +135,7 @@ class my_allocator {
                 if (*p > 0 && *p > size) {
                   break;
                 }
-                p += abs(*p)/sizeof(int) + 2; 
+                p += std::abs(*p)/sizeof(int) + 2; 
             }
 
             // if we exit the loop, and the block is too small (or negative)

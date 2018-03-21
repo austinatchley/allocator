@@ -52,8 +52,8 @@ Doxyfile:
 	doxygen -g
 
 RunAllocator: Allocator.h RunAllocator.c++
-	-clang-check           											Allocator.hh     --
-	-clang-check -analyze 											Allocator.hh     --
+	-clang-check -extra-arg=-std=c++14			   	Allocator.hh      --
+	-clang-check -extra-arg=-std=c++14 -analyze	Allocator.hh      --
 	-clang-check -extra-arg=-std=c++14          RunAllocator.c++  --
 	-clang-check -extra-arg=-std=c++14 -analyze RunAllocator.c++  --
 	$(CXX) $(CFLAGS) -pedantic -std=c++14 -Wall -Weffc++ -Wextra RunAllocator.c++ -o RunAllocator
