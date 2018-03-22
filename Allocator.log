@@ -1,0 +1,219 @@
+commit 2c97a536056eb69c4c0ab0bebae15aa45a566ba9
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Wed Mar 21 21:30:06 2018 -0500
+
+    Added documentation and regenerated
+
+commit 249f586e18d810ae6c9e9abb5cf9bbbd9a94f75f
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Wed Mar 21 21:05:34 2018 -0500
+
+    Generate doxygen files
+
+commit fcfa988ebb51bcf434f10c960a24f032717587da
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Wed Mar 21 21:03:35 2018 -0500
+
+    Added doxyfile
+
+commit 75396c10836e94944b350daa86bf74d05b5258b6
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Wed Mar 21 16:40:56 2018 -0500
+
+    Added acceptance tests, fixed #3
+
+commit 28414d21a71115061c603687999db2c8b36e336c
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Wed Mar 21 01:51:55 2018 -0500
+
+    Added inline documentation and formatted code
+
+commit fe2020b6e7eaaa25d63552302cc1165c63ae215c
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Wed Mar 21 01:38:48 2018 -0500
+
+    Removed type mismatches/warnings
+
+commit 1a24bde8e946715e4c25714116ba52eee400c96d
+Merge: c74586a 8cde7fe
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Wed Mar 21 01:20:32 2018 -0500
+
+    Merge branch 'master' of https://github.com/austinatchley/allocator
+
+commit c74586ab56dc9789f6c60120ffb4e5d63647b06c
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Wed Mar 21 01:17:04 2018 -0500
+
+    Fixed the deque in RunAllocate
+
+commit 8cde7fe065df4f7a59e9a218196e6b5c6b510a0b
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Wed Mar 21 00:49:01 2018 -0500
+
+    Changed input stream to cin instead of hardcoding RunAllocator.in
+
+commit 653ae5e7a050dc7d41f438d70a3aa6e88c58c3d5
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Wed Mar 21 00:34:50 2018 -0500
+
+    Made fixes to allocate for special cases
+
+commit cb0ae1fb5a0743c34d69a2c3c9ffa0af9b1acf45
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 20 23:36:29 2018 -0500
+
+    Fixed deallocate errors
+
+commit e76199bb3b192f5835bd3c83e1db043d87bbcd1d
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 20 23:17:38 2018 -0500
+
+    Formatted
+
+commit f952d04af28fec9364a7891a0105dede53ac9af0
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 20 23:14:36 2018 -0500
+
+    Removed test print
+
+commit ac19ce1d5d4f184faea32c59df79b429fd9419d4
+Merge: 2a13e0f 6cd6630
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 20 23:08:14 2018 -0500
+
+    Merge branch 'master' of https://github.com/austinatchley/allocator
+
+commit 6cd66308709023c1c1370a3a8877632f8deea657
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 20 23:07:06 2018 -0500
+
+    Improved RunAllocator to keep track of pointers given out in a deque
+
+commit 2a13e0f2226302a570b9bc78fcca7bc2b07ce6ea
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 20 22:52:52 2018 -0500
+
+    Fixed #14, implemented valid
+
+commit 24b36273e9a2c6f27b785a0f6903070f54c93b21
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 20 22:11:11 2018 -0500
+
+    Fixed C++ in makefile, added some minor type fixes
+
+commit 0bdce0f0ddf47ee1b22c978bc6bd22265b55e6e5
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 20 19:01:34 2018 -0500
+
+    Updated deallocate. Fixed #15, fixed #12
+
+commit 9a47c4ee767303d7d6ab43dc3ce7faf34badd3ad
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 20 18:19:32 2018 -0500
+
+    Fixed allocate, fixed #11
+
+commit 91e2a0946a0030d74aee8fb90ef34ba3724ac166
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 20 17:54:33 2018 -0500
+
+    Work on allocate, still broken
+
+commit ec208c0a1d518c125af900c14c24d591da7fd3c8
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 20 12:39:23 2018 -0500
+
+    Removed pre-allocation print in RunAllocator
+
+commit f746ccde804a73c7b00e7c76a5ee2668e6d5edb3
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 20 12:36:06 2018 -0500
+
+    Fixed allocation math errors
+
+commit af35626fe9f8b07c13487f22bef7a630e0f9e530
+Merge: c80f1d3 c4216fc
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Mon Mar 19 21:18:16 2018 -0500
+
+    Merge branch 'master' of https://github.com/austinatchley/allocator
+
+commit c80f1d3fc5874fbb2d00df5a01c71c50ff393af7
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Mon Mar 19 21:17:55 2018 -0500
+
+    Fixed allocate's size parameter, started RunAllocate.c++
+
+commit c4216fc691c44dc3b3c4dc0679ff873d8ae86b33
+Merge: 16f6f26 b51c9a6
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Mon Mar 19 20:13:16 2018 -0500
+
+    Merge branch 'master' of https://github.com/austinatchley/allocator
+
+commit 16f6f26817cfa2368c893e3fdb0602b2b2c24a2d
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Mon Mar 19 20:12:38 2018 -0500
+
+    Added deallocate
+
+commit b51c9a6453578e7c278bea0e8f194c8574c4e3b6
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Mon Mar 19 19:46:05 2018 -0500
+
+    Fixed sentinel indexing, grab the whole block if it's too small
+
+commit 413c6c333ea251a22d6d2f8e2eea9ec0ed77b135
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Sun Mar 18 22:52:14 2018 -0500
+
+    Circumvented clang errors, fixed type errors
+
+commit ae2af6ed5b14ed75608729cc0012bfcab833c802
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Mon Mar 12 22:49:31 2018 -0500
+
+    Attempted to implement first iteration of allocate
+
+commit 31d357993c80c3d2090194daefefa8a9d2c59b56
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Thu Mar 8 20:28:58 2018 -0600
+
+    Added inital sentinel values, fix the test cases so they fail on initial sentinel vals
+
+commit a7e86d3c9596564e3148daf2f3bd17925a0492b4
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 6 21:39:25 2018 -0600
+
+    Fixed makefile spacing
+
+commit 04af5eb58835ec97b9a615187c99ebec562dc4bd
+Author: Kendall Bowen <klbowen122@gmail.com>
+Date:   Tue Mar 6 21:35:08 2018 -0600
+
+    Added to gcov in makefile, fixed #10
+
+commit 97d0e4d12537dfec3c5ede6a07c38fc8a1428b0a
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 6 21:27:28 2018 -0600
+
+    Removed references to "voting" from makefile
+
+commit 7f5cf9fd559f7657e8267cf50e7cc2cfd19a3325
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 6 21:19:00 2018 -0600
+
+    Edited .gitignore and added .travis.yml
+
+commit 530711099757fc3737eee402adaac7a0e4fb8db4
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 6 21:14:38 2018 -0600
+
+    Added gitignore, edited makefile
+
+commit 4247ed249a7da6bfed4a22281e25d671ddbd19b1
+Author: Austin Atchley <austinatchley@gmail.com>
+Date:   Tue Mar 6 20:53:06 2018 -0600
+
+    Init files from public repo
