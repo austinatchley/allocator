@@ -19,6 +19,10 @@
 
 using namespace std;
 
+/*
+ * print the sentinels in an allocator
+ * @param x the allocator to print
+ */
 template <typename T, size_t N>
 void allocator_print(const my_allocator<T, N> &x) {
   int index = 0;
@@ -29,6 +33,10 @@ void allocator_print(const my_allocator<T, N> &x) {
   cout << endl;
 }
 
+/*
+ * print each int in an allocator
+ * @param x the allocator to print
+ */
 template <typename T, int N>
 void allocator_print_ints(const my_allocator<T, N> &x) {
   int index = 0;

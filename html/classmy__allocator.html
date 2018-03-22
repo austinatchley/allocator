@@ -358,7 +358,13 @@ template&lt;typename T , std::size_t N&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>O(1) in space O(n) in time after allocation there must be enough space left for a valid block the smallest allowable block is sizeof(T) + (2 * sizeof(int)) choose the first block that fits throw a bad_alloc exception, if n is invalid </p>
+<p>O(1) in space O(n) in time after allocation there must be enough space left for a valid block the smallest allowable block is sizeof(T) + (2 * sizeof(int)) choose the first block that fits throw a bad_alloc exception, if n is invalid </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">num_obj</td><td>the number of value_types to allocate </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a pointer to the first value in the new block </dd></dl>
 
 </div>
 </div>
@@ -432,7 +438,13 @@ template&lt;typename T , std::size_t N&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>O(1) in space O(1) in time after deallocation adjacent free blocks must be coalesced throw an invalid_argument exception, if p is invalid &lt;your documentation&gt;=""&gt; </p>
+<p>O(1) in space O(1) in time after deallocation adjacent free blocks must be coalesced throw an invalid_argument exception, if p is invalid </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p</td><td>pointer to the block to deallocate </td></tr>
+    <tr><td class="paramname">size_type</td><td>unused amount of bytes to deallocate </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -565,7 +577,7 @@ template&lt;typename T , std::size_t N&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>O(1) in space O(n) in time &lt;your documentation&gt;=""&gt; </p>
+<p>O(1) in space O(n) in time </p><dl class="section return"><dt>Returns</dt><dd>a bool, representing whether or not the allocator is valid </dd></dl>
 
 </div>
 </div>

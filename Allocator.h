@@ -75,7 +75,7 @@ private:
   /**
    * O(1) in space
    * O(n) in time
-   * <your documentation>
+   * @return a bool, representing whether or not the allocator is valid
    */
   bool valid() const {
     const int *p = &(*this)[0];
@@ -133,6 +133,8 @@ public:
    * the smallest allowable block is sizeof(T) + (2 * sizeof(int))
    * choose the first block that fits
    * throw a bad_alloc exception, if n is invalid
+   * @param num_obj the number of value_types to allocate
+   * @return a pointer to the first value in the new block
    */
   pointer allocate(size_type num_obj) {
     if (num_obj <= 0) {
@@ -216,7 +218,8 @@ public:
    * O(1) in time
    * after deallocation adjacent free blocks must be coalesced
    * throw an invalid_argument exception, if p is invalid
-   * <your documentation>
+   * @param p pointer to the block to deallocate
+   * @param size_type unused amount of bytes to deallocate
    */
   void deallocate(pointer p, size_type) {
     int *point = reinterpret_cast<int *>(p);
